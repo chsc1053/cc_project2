@@ -47,7 +47,7 @@ def register():
     email = request.form["email"]
     address = request.form["address"]
     
-    with sqlite3.connect("users.db") as conn:
+    with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         c.execute("SELECT * FROM users WHERE username=?", (username,))
         if c.fetchone():
@@ -69,7 +69,7 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    with sqlite3.connect("users.db") as conn:
+    with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         c.execute(
             "SELECT * FROM users WHERE username=? AND password=?", (username, password)
@@ -89,7 +89,7 @@ def home():
         return redirect(url_for("index"))
 
     username = session["username"]
-    with sqlite3.connect("users.db") as conn:
+    with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         c.execute("SELECT * FROM users WHERE username=?", (username,))
         user = c.fetchone()
