@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Home</title>
+
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+
+    <!-- Boxicons CSS -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <section class="container forms">
+      <div class="form home">
+        <div class="form-content">
+          <header>User Home</header>
+          <div class="field input-field">
+            <p>Username: {{ user[0] }}</p>
+          </div>
+          <div class="field input-field">
+            <p>First Name: {{ user[2] }}</p>
+          </div>
+          <div class="field input-field">
+            <p>Last Name: {{ user[3] }}</p>
+          </div>
+          <div class="field input-field">
+            <p>Email: {{ user[4] }}</p>
+          </div>
+          <div class="field input-field">
+            <p>Address: {{ user[5] }}</p>
+          </div>
+          <div class="field button-field">
+            <a href="{{ url_for('logout') }}"
+              ><button type="button">Logout</button></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

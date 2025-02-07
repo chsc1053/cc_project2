@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+
+    <!-- Boxicons CSS -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <section class="container forms">
+      <div class="form login">
+        <div class="form-content">
+          <header>Login</header>
+          <form action="{{ url_for('login') }}" method="POST">
+            <div class="field input-field">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                class="input"
+              />
+            </div>
+
+            <div class="field input-field">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                class="password"
+              />
+              <i class="bx bx-hide eye-icon"></i>
+            </div>
+
+            <p id="error-message">{% if error %}{{ error }}{% endif %}</p>
+
+            <div class="field button-field">
+              <button type="submit">Login</button>
+            </div>
+          </form>
+
+          <div class="form-link">
+            <span
+              >Don't have an account?
+              <a href="{{ url_for('signup') }}" class="link">SignUp</a></span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='eyeToggle.js') }}"></script>
+    <script>
+      const usernameInput = document.querySelector('input[name="username"]');
+      const passwordInput = document.querySelector('input[name="password"]');
+      const errorMessage = document.getElementById('error-message');
+
+      if (usernameInput && passwordInput && errorMessage) {
+        const clearErrorMessage = () => {
+          errorMessage.textContent = '';
+        };
+
+        usernameInput.addEventListener('input', clearErrorMessage);
+        passwordInput.addEventListener('input', clearErrorMessage);
+      }
+    </script>
+  </body>
+</html>
