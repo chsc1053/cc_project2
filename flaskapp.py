@@ -5,9 +5,12 @@ import os
 app = Flask(__name__, static_folder="static")
 app.secret_key = "my_key"
 
+# Absolute path to the database file
+BASE_DIR = os.path.dirname(os.path.abspath('users.db'))
+DATABASE = os.path.join(BASE_DIR, 'users.db')
 
 def init_db():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
     c.execute(
         """CREATE TABLE IF NOT EXISTS users (
