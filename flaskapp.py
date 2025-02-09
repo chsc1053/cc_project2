@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
+from collections import Counter
 
 app = Flask(__name__, static_folder="static")
 app.secret_key = "my_key"
@@ -35,7 +36,8 @@ def index():
 @app.route("/signup")
 def signup():
     error = request.args.get("error")
-    return render_template("signup.html", error=error)
+    file_upload_status = request.args.get("file_upload_status")
+    return render_template("signup.html", error=error, file_upload_status=file_upload_status)
 
 
 @app.route("/register", methods=["POST"])
@@ -46,13 +48,26 @@ def register():
     lastname = request.form["lastname"]
     email = request.form["email"]
     address = request.form["address"]
+    textfile = request.files.get("textfile")
+    
+    # Create a directory for the user if it doesn't exist
+    user_dir = os.path.join('files', username)
+    os.makedirs(user_dir, exist_ok=True)
+
+    file_upload_status = None
+    
+    # Save the uploaded file if it exists
+    if textfile and textfile.filename.endswith('.txt'):
+        file_path = os.path.join(user_dir, textfile.filename)
+        textfile.save(file_path)
+        file_upload_status = "File uploaded successfully"
     
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
         c.execute("SELECT * FROM users WHERE username=?", (username,))
         if c.fetchone():
             error = "Username already exists"
-            return render_template("signup.html", error=error)
+            return render_template("signup.html", error=error, file_upload_status=file_upload_status)
 
         c.execute(
             "INSERT INTO users (username, password, firstname, lastname, email, address) VALUES (?, ?, ?, ?, ?, ?)",
@@ -61,7 +76,7 @@ def register():
         conn.commit()
 
     success = "SignUp Successful! Navigating to Login page..."
-    return render_template("signup.html", success=success)
+    return render_template("signup.html", success=success, file_upload_status=file_upload_status)
 
 
 @app.route("/login", methods=["POST"])
@@ -94,7 +109,17 @@ def home():
         c.execute("SELECT * FROM users WHERE username=?", (username,))
         user = c.fetchone()
 
-    return render_template("home.html", user=user)
+    word_frequency = {}
+    user_dir = os.path.join('files', username)
+    if os.path.exists(user_dir):
+        for file in os.listdir(user_dir):
+            if file.endswith('.txt'):
+                with open(os.path.join(user_dir, file), 'r') as f:
+                    text = f.read()
+                    words = text.split()
+                    word_frequency = Counter(words)
+    
+    return render_template("home.html", user=user, word_frequency=word_frequency)
 
 
 @app.route("/logout")

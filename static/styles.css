@@ -117,7 +117,7 @@ form {
 
 #password-match-message,
 #error-message,
-#success-message {
+#success-message, #file-upload-status {
   margin-top: 10px;
 }
 
@@ -125,7 +125,7 @@ form {
   color: red;
 }
 
-#success-message {
+#success-message, #file-upload-status {
   color: green;
 }
 
@@ -133,4 +133,13 @@ form {
   .form {
     padding: 20px 10px;
   }
+}
+
+#word-frequency {
+  height: 200px !important;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }

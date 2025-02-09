@@ -77,6 +77,19 @@
             </div>
             <div class="field input-field">
               <input
+                type="file"
+                name="textfile"
+                placeholder="File"
+                id="textfile"
+                accept=".txt"
+                class="input"
+              />
+            </div>
+            <p id="file-upload-status">
+              {% if file_upload_status %}{{ file_upload_status }}{% endif %}
+            </p>
+            <div class="field input-field">
+              <input
                 type="password"
                 name="password"
                 placeholder="Create password"
