@@ -38,13 +38,21 @@
           <div class="field input-field">
             <p>Address: {{ user[5] }}</p>
           </div>
+          {% if file_exists %}
           <div class="field input-field" id="word-frequency">
-              <p><b>Word Frequency:</b> <br>
-                {% for word, count in word_frequency.items() %}
-                  {{ word }}: {{ count }} <br>
-                {% endfor %}
-              </p>
+            <p>
+              <b>Word Frequency:</b> <br />
+              {% for word, count in word_frequency.items() %}
+                {{ word }}: {{ count }} <br />
+              {% endfor %}
+            </p>
           </div>
+          <div class="field button-field">
+            <a href="{{ url_for('download_word_frequency') }}">
+              <button type="button">Download</button>
+            </a>
+          </div>
+          {% endif %}
           <div class="field button-field">
             <a href="{{ url_for('logout') }}"
               ><button type="button">Logout</button></a

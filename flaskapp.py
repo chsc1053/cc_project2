@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-import sqlite3
-import os
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from collections import Counter
+import os, sqlite3, io
 
 app = Flask(__name__, static_folder="static")
 app.secret_key = "my_key"
@@ -98,6 +97,24 @@ def login():
         return redirect(url_for("index", error="Invalid login credentials!"))
 
 
+@app.route("/download_word_frequency")
+def download_word_frequency():
+    if "username" not in session:
+        return redirect(url_for("index"))
+
+    username = session["username"]
+    user_dir = os.path.join('files', username)
+    
+    word_frequency = session.get('word_frequency', {})
+
+    word_freq_stream = io.StringIO()
+    for word, count in word_frequency.items():
+        word_freq_stream.write(f"{word}: {count}\n")
+    word_freq_stream.seek(0)
+
+    return send_file(io.BytesIO(word_freq_stream.getvalue().encode()), mimetype='text/plain', as_attachment=True, download_name='word_frequency_'+username+'.txt')
+
+
 @app.route("/home")
 def home():
     if "username" not in session:
@@ -111,15 +128,19 @@ def home():
 
     word_frequency = {}
     user_dir = os.path.join('files', username)
+    file_exists = False
     if os.path.exists(user_dir):
         for file in os.listdir(user_dir):
             if file.endswith('.txt'):
+                file_exists = True
                 with open(os.path.join(user_dir, file), 'r') as f:
                     text = f.read()
                     words = text.split()
                     word_frequency = Counter(words)
     
-    return render_template("home.html", user=user, word_frequency=word_frequency)
+    session['word_frequency'] = word_frequency
+
+    return render_template("home.html", user=user, word_frequency=word_frequency, file_exists=file_exists)
 
 
 @app.route("/logout")
